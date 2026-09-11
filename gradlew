@@ -10,7 +10,7 @@ if [ -n "${GRADLE_BIN:-}" ]; then
     exec "$GRADLE_BIN" "$@"
 fi
 
-if command -v gradle >/dev/null 2>&1; then
+if command -v gradle >/dev/null 2>&1 && gradle --version 2>/dev/null | grep -q "Gradle $gradle_version"; then
     exec gradle "$@"
 fi
 
