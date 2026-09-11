@@ -7,6 +7,11 @@ android {
     namespace = "com.usamashah.heartthreshold"
     compileSdk = 36
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
     defaultConfig {
         applicationId = "com.usamashah.heartthreshold"
         minSdk = 30
