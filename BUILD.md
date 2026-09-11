@@ -12,7 +12,7 @@ This is a single-module Wear OS Android application. The source is Kotlin and th
 - Android build-tools 35.0.0
 - `androidx.health:health-services-client:1.1.0-rc02`
 
-Android Studio can install the SDK components and run the project directly. The checked-in `gradlew` launcher uses an installed `gradle` command when available, or downloads Gradle 8.10.2 into a user cache. A command-line machine also needs `ANDROID_SDK_ROOT` (or `ANDROID_HOME`) set to its SDK directory.
+Android Studio can install the SDK components and run the project directly. The checked-in `gradlew` launcher uses an installed Gradle command only when it is exactly 8.10.2; otherwise it downloads that pinned version into a user cache. A command-line machine also needs `ANDROID_SDK_ROOT` (or `ANDROID_HOME`) set to its SDK directory.
 
 ## Build a debug APK
 
