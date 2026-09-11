@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Heart Threshold</string>
+    <string name="alert_channel_name">High heart-rate alerts</string>
+    <string name="alert_channel_description">Alerts when the configured heart-rate limit is crossed</string>
+</resources>
