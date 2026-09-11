@@ -16,7 +16,7 @@ fi
 
 cache_root="${GRADLE_USER_HOME:-${XDG_CACHE_HOME:-${TMPDIR:-/tmp}}}/pixel-watch-heart-rate-alert"
 install_dir="$cache_root/gradle-$gradle_version"
-gradle_bin="$install_dir/gradle-$gradle_version/bin/gradle"
+gradle_bin="$install_dir/bin/gradle"
 
 if [ ! -x "$gradle_bin" ]; then
     mkdir -p "$cache_root"
