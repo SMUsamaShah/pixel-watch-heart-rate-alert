@@ -236,6 +236,7 @@ class MainActivity : ComponentActivity() {
         const val DEFAULT_THRESHOLD = 120
         const val MIN_THRESHOLD = 30
         const val MAX_THRESHOLD = 240
+        const val RESET_HYSTERESIS_BPM = 5
 
         private const val PERMISSION_READ_HEART_RATE = "android.permission.health.READ_HEART_RATE"
         private const val PERMISSION_READ_HEALTH_DATA_IN_BACKGROUND =
