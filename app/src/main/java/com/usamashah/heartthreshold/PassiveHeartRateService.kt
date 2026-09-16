@@ -4,6 +4,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.core.app.NotificationCompat
@@ -13,7 +14,14 @@ import androidx.health.services.client.data.DataPointContainer
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.PassiveListenerConfig
 import androidx.health.services.client.data.SampleDataPoint
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlin.math.roundToInt
+
+private val ALERT_TIME_FORMATTER =
+    DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm:ss", Locale.getDefault())
 
 /** Receives the low-power, batched heart-rate stream from Wear OS Health Services. */
 class PassiveHeartRateService : PassiveListenerService() {
@@ -23,11 +31,16 @@ class PassiveHeartRateService : PassiveListenerService() {
     }
 
     override fun onNewDataPointsReceived(dataPoints: DataPointContainer) {
+        val bootInstant = Instant.ofEpochMilli(
+            System.currentTimeMillis() - SystemClock.elapsedRealtime()
+        )
         val heartRatePoints = dataPoints.getData(DataType.HEART_RATE_BPM)
+
         for (point in heartRatePoints) {
             val sample = point as? SampleDataPoint<*> ?: continue
             val bpm = (sample.value as? Number)?.toDouble()?.roundToInt() ?: continue
-            handleHeartRate(bpm)
+            val measuredAt = sample.getTimeInstant(bootInstant)
+            handleHeartRate(bpm, measuredAt)
         }
     }
 
@@ -36,7 +49,7 @@ class PassiveHeartRateService : PassiveListenerService() {
         notifyPermissionLost()
     }
 
-    private fun handleHeartRate(bpm: Int) {
+    private fun handleHeartRate(bpm: Int, measuredAt: Instant) {
         val threshold = preferences.getInt(MainActivity.PREF_THRESHOLD, MainActivity.DEFAULT_THRESHOLD)
         val wasAbove = preferences.getBoolean(MainActivity.PREF_WAS_ABOVE, false)
         val isAbove = bpm >= threshold
@@ -52,17 +65,23 @@ class PassiveHeartRateService : PassiveListenerService() {
             .apply()
 
         if (isAbove && !wasAbove) {
-            notifyHeartRateAlert(bpm, threshold)
+            notifyHeartRateAlert(bpm, threshold, measuredAt)
         }
     }
 
-    private fun notifyHeartRateAlert(bpm: Int, threshold: Int) {
+    private fun notifyHeartRateAlert(bpm: Int, threshold: Int, measuredAt: Instant) {
         createNotificationChannel()
+
+        val measuredAtText = measuredAt
+            .atZone(ZoneId.systemDefault())
+            .format(ALERT_TIME_FORMATTER)
+        val message = "Measured $bpm BPM at $measuredAtText (limit $threshold)"
 
         val notification = NotificationCompat.Builder(this, ALERT_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_heart)
             .setContentTitle("Heart rate above limit")
-            .setContentText("Detected $bpm BPM (limit $threshold)")
+            .setContentText(message)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(message))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
