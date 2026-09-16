@@ -29,7 +29,7 @@ Output:
 app/build/outputs/apk/debug/app-debug.apk
 ```
 
-The APK has package name `com.usamashah.heartthreshold`, version `1.0`, and is signed with the normal debug key. It is suitable for installing on a development watch, not for Play Store release.
+The APK has package name `com.usamashah.heartthreshold`, version `1.1`, and is signed with the normal debug key. It is suitable for installing on a development watch, not for Play Store release.
 
 ## Android Studio
 
@@ -45,6 +45,7 @@ Open the repository as a project, allow Gradle sync, install SDK 36 if prompted,
 - Passive registrations do not survive a watch reboot. `StartupReceiver` schedules `RestorePassiveMonitoringWorker` when monitoring was enabled before reboot.
 - On Wear OS 4 and earlier, the app requests legacy `BODY_SENSORS` permissions. On newer Wear OS versions it requests Health Services permissions.
 - The notification permission is requested before monitoring is enabled on Android 13 and later.
+- Each `SampleDataPoint` carries a boot-relative measurement duration. The service converts it with Health Services’ `getTimeInstant()` API and displays the resulting measurement time in the watch’s local timezone; it does not use the callback/delivery time.
 - `PREF_WAS_ABOVE` prevents repeated alerts for the same episode. It resets after monitoring is stopped or when a later reading is at least 5 BPM below the configured limit.
 
 The official background-monitoring guidance is available at <https://developer.android.com/health-and-fitness/health-services/monitor-background>.
