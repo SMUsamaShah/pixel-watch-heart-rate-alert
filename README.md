@@ -8,7 +8,7 @@ A small Wear OS app that lets you choose an upper heart-rate limit and alerts yo
 2. Open **Heart Threshold**, enter a limit such as `120`, and tap **Start monitoring**.
 3. Grant the heart-rate, background-health, and notification permissions.
 
-The app alerts once per episode and re-arms after the reading drops below the limit. Passive data is batched by Wear OS, so a brief spike can be delayed or missed. This is a wellness tool, not a medical alarm.
+The notification includes the measurement date and time from the heart-rate sample, in the watch’s local timezone. This remains useful when Wear OS delivers the reading several minutes later. The app alerts once per episode and re-arms after the reading drops below the limit. Passive data is batched by Wear OS, so a brief spike can be delayed or missed. This is a wellness tool, not a medical alarm.
 
 ## Build
 
